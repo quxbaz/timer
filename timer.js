@@ -15,6 +15,11 @@
 
 */
 
+/*
+  <TODO>
+  Add support for pausing/resuming.
+*/
+
 function has(obj, key) {
   return obj.hasOwnProperty(key);
 }
