@@ -9,6 +9,9 @@
   - Move all info to timer.Timer from workerJs. workerJs should be
     lightweight. All calculations and data should exist in Timer.
   - Record value @elapsed.
+
+  <BUG> postMessage('stop') can take longer than
+  10ms to fire and cause this block to run multiple times.
 */
 
 function has(obj, key) {
