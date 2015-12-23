@@ -4,7 +4,7 @@
   "authors": [
     "David Yeung <quxbaz@gmail.com>"
   ],
-  "description": "Keeping time all the time.",
+  "description": "Keeping time all the time with web workers.",
   "moduleType": [
     "es6"
   ],
