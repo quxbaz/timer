@@ -1,7 +1,18 @@
 /*
   timer.js
 
-  <Usage:TODO>
+  <Usage>
+
+   // Creates a timer that ticks every 100ms.
+  var t = new timer.Timer({tickInterval: 100});
+
+  // The timer will stop after ticking 10 times.
+  t.on('tick', function() {
+    console.log(t.elapsed);
+    if (t.tickCount == 10)
+      t.stop();
+  });
+
 */
 
 function has(obj, key) {
@@ -110,6 +121,9 @@ fn.update = function() {
 };
 
 fn.start = function() {
+  /*
+    <Warning> This method is asynchronous. See Timer.stop
+  */
   this.startTime = now();
   this.worker.postMessage({message: 'start'});
   return this;
@@ -117,9 +131,10 @@ fn.start = function() {
 
 fn.stop = function() {
   /*
-    <Warning>: A timer does not stop immediately when this function is
-    called. It stops when the message is passed to the worker, which
-    takes a few milliseconds in most cases.
+    <Warning>: This method is asynchronous. A timer does not stop
+    immediately when this function is called. It stops when the
+    message is passed to the worker, which takes a few milliseconds in
+    most cases.
   */
   this.worker.postMessage({message: 'stop'});
   return this;
