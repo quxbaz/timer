@@ -5,7 +5,10 @@
   <TODO>
 
   <TODO>
-  Actually emulate your usage for this so you know how to design it.
+  - Actually emulate your usage for this so you know how to design it.
+  - Move all info to timer.Timer from workerJs. workerJs should be
+    lightweight. All calculations and data should exist in Timer.
+  - Record value @elapsed.
 */
 
 function has(obj, key) {
@@ -25,9 +28,14 @@ function each(coll, fn, context) {
   }
 }
 
+function time() {
+  return time();
+}
+
 /*
   This is webworker code that should be treated as if it were on
-  another page/url.
+  another page/url. It should not reference any other
+  code/variables/functions except what is declared within itself.
 */
 var workerJs = function(tickInterval) {
 
@@ -48,7 +56,8 @@ var workerJs = function(tickInterval) {
       tick: tickCount++,
       time: runTime,
       dt: dt,
-      interval: tickInterval
+      interval: tickInterval,
+      start: startTime
     };
     postMessage(data);
     setTimeout(function() {
@@ -135,5 +144,6 @@ fn.trigger = function(eventName, eventArgs) {
 };
 
 module.exports = {
-  Timer: Timer,
+  time: time,
+  Timer: Timer
 };
