@@ -6,12 +6,6 @@
 
   <TODO>
   - Actually emulate your usage for this so you know how to design it.
-  - Move all info to timer.Timer from workerJs. workerJs should be
-    lightweight. All calculations and data should exist in Timer.
-  - Record value @elapsed.
-
-  <BUG> postMessage('stop') can take longer than
-  10ms to fire and cause this block to run multiple times.
 */
 
 function has(obj, key) {
@@ -31,9 +25,9 @@ function each(coll, fn, context) {
   }
 }
 
-function time() {
-  return time();
-}
+function now() {
+  return performance.now();
+};
 
 /*
   This is webworker code that should be treated as if it were on
@@ -47,33 +41,23 @@ var workerJs = function(tickInterval) {
     data object consisting of various time properties.
   */
 
-  var run = false;
-  var tickCount = 0;
-  var startTime;
-  var runTime = 0;
+  var running = false;
 
   function tick() {
-    var dt = performance.now() - startTime + runTime;
-    runTime += dt;
-    var data = {
-      tick: tickCount++,
-      time: runTime,
-      dt: dt,
-      interval: tickInterval,
-      start: startTime
-    };
-    postMessage(data);
+    if (!running)
+      return;
     setTimeout(function() {
-      if (run) tick();
+      postMessage('');
+      tick();
     }, tickInterval);
   };
 
+  // <TODO> add a set custom interval listener
   self.addEventListener('message', function(event) {
-    if (event.data == 'stop')
-      run = false;
-    else if (event.data == 'start') {
-      run = true;
-      startTime = performance.now();
+    if (event.data.message == 'stop')
+      running = false;
+    else if (event.data.message == 'start') {
+      running = true;
       tick();
     }
   });
@@ -89,9 +73,11 @@ var Timer = function(opts) {
     'tick': []
   };
   this.tickInterval = opts.tickInterval || 25;
-
-  // Make sure you call this after all options have been configured.
+  this.tickCount = 0;
+  this.elapsed = 0;
+  // Make sure this is called only after tickInterval have been set.
   this.worker = this.createWorker();
+  this.on('tick', this.update.bind(this));
 };
 
 var fn = Timer.prototype;
@@ -99,9 +85,9 @@ var fn = Timer.prototype;
 fn.checkBrowserSupport = function() {
   var features = ['Blob', 'Worker', 'URL', 'performance'];
   each(features, function(feature) {
-    if (typeof this[feature] == 'undefined')
+    if (typeof self[feature] == 'undefined')
       throw new Error(feature + ' is not supported in this browser environment.');
-  }, self);
+  });
 };
 
 fn.createWorker = function() {
@@ -116,20 +102,32 @@ fn.createWorker = function() {
   return worker;
 };
 
-fn.start = function() {
-  this.worker.postMessage('start');
-  return this;
-};
-
-fn.stop = function() {
-  this.worker.postMessage('stop');
-  return this;
-};
-
 fn.checkValidEvent = function(eventName) {
   if (!has(this.events, eventName))
     throw new Error('Event "' + eventName + '" not a valid event.');
 }
+
+fn.update = function() {
+  this.dt = now() - (this.startTime + this.elapsed);
+  this.elapsed += this.dt;
+  this.tickCount++;
+};
+
+fn.start = function() {
+  this.startTime = now();
+  this.worker.postMessage({message: 'start'});
+  return this;
+};
+
+fn.stop = function() {
+  /*
+    <Warning>: A timer does not stop immediately when this function is
+    called. It stops when the message is passed to the worker, which
+    takes a few milliseconds in most cases.
+  */
+  this.worker.postMessage({message: 'stop'});
+  return this;
+};
 
 fn.on = function(eventName, callback) {
   this.checkValidEvent(eventName);
@@ -147,6 +145,5 @@ fn.trigger = function(eventName, eventArgs) {
 };
 
 module.exports = {
-  time: time,
   Timer: Timer
 };
