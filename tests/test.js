@@ -81,7 +81,7 @@ describe('timer.js', function() {
 
   it("measures a minimal tick against setTimeout.", function(done) {
     var start = performance.now();
-    var tickCount = 100;
+    var tickCount = 50;
     var tickInterval = 1;
     var i = 0;
     (function fn() {
@@ -101,6 +101,18 @@ describe('timer.js', function() {
         }).start();
       }
     })();
+  });
+
+  it("Changes the tick interval while the timer is running.", function(done) {
+    var t = new timer.Timer({tickInterval: 10});
+    t.on('tick', function() {
+      if (t.tickCount == 10)
+        t.setTickInterval(50);
+      else if (t.tickCount == 15) {
+        approx(t.elapsed, 350, 50).should.be.true;
+        done();
+      }
+    }).start();
   });
 
 });

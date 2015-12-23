@@ -1,11 +1,7 @@
 /*
   timer.js
 
-  <Usage>
-  <TODO>
-
-  <TODO>
-  - Actually emulate your usage for this so you know how to design it.
+  <Usage:TODO>
 */
 
 function has(obj, key) {
@@ -52,14 +48,14 @@ var workerJs = function(tickInterval) {
     }, tickInterval);
   };
 
-  // <TODO> add a set custom interval listener
   self.addEventListener('message', function(event) {
     if (event.data.message == 'stop')
       running = false;
     else if (event.data.message == 'start') {
       running = true;
       tick();
-    }
+    } else if (event.data.message == 'setTickInterval')
+      tickInterval = event.data.tickInterval;
   });
 
 };
@@ -142,6 +138,14 @@ fn.trigger = function(eventName, eventArgs) {
     callback.apply(this, eventArgs);
   }, this);
   return this;
+};
+
+fn.setTickInterval = function(tickInterval) {
+  this.tickInterval = tickInterval;
+  this.worker.postMessage({
+    message: 'setTickInterval',
+    tickInterval: tickInterval
+  });
 };
 
 module.exports = {
