@@ -15,10 +15,6 @@
 
 */
 
-/*
-  <TODO>
-  Add support for pausing/resuming.
-*/
 
 function has(obj, key) {
   return obj.hasOwnProperty(key);
@@ -168,6 +164,4 @@ fn.setTickInterval = function(tickInterval) {
   });
 };
 
-module.exports = {
-  Timer: Timer
-};
+module.exports = Timer;

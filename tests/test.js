@@ -1,6 +1,6 @@
 var _ = require('./lib/underscore/underscore');
 require('./lib/chai/chai').should();
-var timer = require('../timer');
+var Timer = require('../timer');
 
 describe('timer.js', function() {
 
@@ -12,11 +12,11 @@ describe('timer.js', function() {
   }
 
   it("creates a Timer object.", function() {
-    new timer.Timer();
+    new Timer();
   });
 
   it("starts and stops a timer.", function(done) {
-    var t = new timer.Timer();
+    var t = new Timer();
     t.start();
     t.on('tick', function() {
       t.stop();
@@ -25,18 +25,18 @@ describe('timer.js', function() {
   });
 
   it("binds a valid event.", function() {
-    var t = new timer.Timer();
+    var t = new Timer();
     t.on.bind(t, 'tick', fn).should.not.throw();
   });
 
   it("throws on binding an invalid event.", function() {
-    var t = new timer.Timer();
+    var t = new Timer();
     t.on.bind(t, 'foofoofoo', fn).should.throw();
   });
 
   it("configures a tick interval.", function(done) {
-    var t = new timer.Timer({tickInterval: 50});
-    t = new timer.Timer({tickInterval: 10});
+    var t = new Timer({tickInterval: 50});
+    t = new Timer({tickInterval: 10});
     t.on('tick', function() {
       // console.log('tick');
       if (t.tickCount == 5) {
@@ -48,7 +48,7 @@ describe('timer.js', function() {
   });
 
   it("listens to a timer for 10 ticks.", function(done) {
-    var t = new timer.Timer({tickInterval: 10})
+    var t = new Timer({tickInterval: 10})
     t.on('tick', function() {
       if (t.tickCount == 10) {
         t.stop();
@@ -58,7 +58,7 @@ describe('timer.js', function() {
   });
 
   it("measures a timer for 10 ticks", function(done) {
-    var t = new timer.Timer({tickInterval: 10});
+    var t = new Timer({tickInterval: 10});
     t.on('tick', function() {
       if (t.tickCount == 10) {
         (approx(t.elapsed, 100, 50)).should.be.true;
@@ -69,7 +69,7 @@ describe('timer.js', function() {
   });
 
   it("measures a timer for 100 ticks", function(done) {
-    var t = new timer.Timer({tickInterval: 5});
+    var t = new Timer({tickInterval: 5});
     t.on('tick', function() {
       if (t.tickCount == 100) {
         (approx(t.elapsed, 500, 75)).should.be.true;
@@ -91,7 +91,7 @@ describe('timer.js', function() {
       }
       else {
         var timeoutTicksPerSec = (performance.now() - start) / tickCount;
-        t = new timer.Timer({tickInterval: tickInterval});
+        t = new Timer({tickInterval: tickInterval});
         t.on('tick', function() {
           if (t.tickCount == tickCount) {
             var timerTicksPerSec = t.elapsed / tickCount;
@@ -104,7 +104,7 @@ describe('timer.js', function() {
   });
 
   it("Changes the tick interval while the timer is running.", function(done) {
-    var t = new timer.Timer({tickInterval: 10});
+    var t = new Timer({tickInterval: 10});
     t.on('tick', function() {
       if (t.tickCount == 10)
         t.setTickInterval(50);
