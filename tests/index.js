@@ -1,8 +1,8 @@
 var _ = require('./lib/underscore/underscore');
 require('./lib/chai/chai').should();
-var Timer = require('../timer');
+var Timer = require('../index');
 
-describe('timer.js', function() {
+describe('timer', function() {
 
   var fn = function() {};       // No-op function.
 

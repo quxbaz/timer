@@ -1,8 +1,8 @@
 {
-  "name": "timer.js",
+  "name": "timer",
   "version": "1.0.0",
-  "description": "Timers with web workers",
-  "main": "timer.js",
+  "description": "Timing with web workers",
+  "main": "index.js",
   "directories": {
     "test": "tests"
   },
@@ -11,12 +11,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/quxbaz/timer.js.git"
+    "url": "git+https://github.com/quxbaz/timer.git"
   },
   "author": "quxbaz",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/quxbaz/timer.js/issues"
+    "url": "https://github.com/quxbaz/timer/issues"
   },
-  "homepage": "https://github.com/quxbaz/timer.js#readme"
+  "homepage": "https://github.com/quxbaz/timer#readme"
 }

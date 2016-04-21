@@ -1,5 +1,5 @@
 /*
-  timer.js
+  timer
 
   <Usage>
 
